@@ -1,6 +1,8 @@
 package br.com.supera.lib.audit.domain.model.database.request;
 
 import br.com.supera.lib.audit.domain.model.BaseModel;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +21,10 @@ public class PaginationRequestModel extends BaseModel {
 
 	private static final long serialVersionUID = -4669269919628833236L;
 
+	@Min(0)
 	private int page;
+	@Min(0)
+	@Max(1000)
 	private int size;
 	
 }

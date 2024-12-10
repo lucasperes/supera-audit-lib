@@ -2,6 +2,7 @@ package br.com.supera.lib.audit.domain.model.database.config;
 
 import br.com.supera.lib.audit.domain.model.BaseModel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 /**
  * Classe Model para guardar as propriedades de conexao com o banco de dados
  */
+@Builder
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor

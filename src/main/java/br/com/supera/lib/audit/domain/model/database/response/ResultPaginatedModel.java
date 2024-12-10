@@ -19,12 +19,13 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultPaginatedModel<T extends AbstractAuditEntityMongo<?>> extends BaseModel {
+public class ResultPaginatedModel<T extends AbstractAuditEntityMongo> extends BaseModel {
 
 	private static final long serialVersionUID = -7644051652750646902L;
 
 	private int page;
 	private int size;
+	private int totalPages;
 	private int totalElements;
 	private List<T> content;
 	
