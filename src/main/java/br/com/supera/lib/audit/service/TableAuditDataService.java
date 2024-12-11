@@ -20,10 +20,10 @@ public class TableAuditDataService extends AbstractAuditServiceBase {
 		return getConnection().insert(entity, TableAuditDataEntityMongo.class);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public <T extends AbstractAuditEntity<?>> ResultPaginatedModel<TableAuditDataEntityMongo> list(
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <T extends AbstractAuditEntity<?>> ResultPaginatedModel<TableAuditDataEntityMongo<T>> list(
 			FiltersTableAuditData filters) {
-		return getConnection().list(filters, TableAuditDataEntityMongo.class);
+		return (ResultPaginatedModel) getConnection().list(filters, TableAuditDataEntityMongo.class);
 	}
 
 }

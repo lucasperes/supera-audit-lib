@@ -5,8 +5,12 @@ import java.util.Objects;
 
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +23,8 @@ import lombok.Setter;
 @Audited
 @Getter @Setter
 @MappedSuperclass
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "_class")
 public abstract class AbstractAuditEntity<ID> implements Serializable {
 
 	private static final long serialVersionUID = -5090870804974529985L;
@@ -39,9 +45,23 @@ public abstract class AbstractAuditEntity<ID> implements Serializable {
 	 */
 	public abstract void setId(ID id);
 	
+	/**
+	 * Deve retornar o tipo de classe concreta de implementacao
+	 * 
+	 * @return {@link Class}
+	 */
+	public abstract Class<?> getClassType();
+	
 	@NotNull
 	@Column(name = COLUMN_VERSAO, nullable = false)
 	private Integer versao;
+	
+	@Transient
+	private String _class;
+	
+	public AbstractAuditEntity() {
+		this._class = getClassType().getName();
+	}
 	
 	// Equals and Hashcode
 	

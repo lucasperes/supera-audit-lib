@@ -126,7 +126,10 @@ public class MongoConnectionFactory {
 					.into(new ArrayList<>());
 			
 			final var count = collection.countDocuments(filtersBson);
-			final var totalPages = count / pagination.getSize();
+			var totalPages = (count / pagination.getSize());
+			if(count > 0) {
+				totalPages += 1; // Add 1 because page start on 0
+			}
 			
 			LOGGER.info("INFO | Sucess on list entities with returned result occurs = {}", response.size());
 			
@@ -174,7 +177,7 @@ public class MongoConnectionFactory {
 				}
 			}
 		}
-		return null;
+		return Filters.empty();
 	}
 	
 	private Bson createSortersBson(BaseFiltersDatabaseModel filters) {
@@ -189,7 +192,7 @@ public class MongoConnectionFactory {
 				return Sorts.orderBy(listSorters);
 			}
 		}
-		return null;
+		return Filters.empty();
 	}
 	
 	private Bson extractSorterValue(ValueSorterModel sort) {

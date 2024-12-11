@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
+
 import br.com.supera.lib.audit.domain.entity.mongo.TableAuditDataEntityMongo;
 import br.com.supera.lib.audit.domain.enums.TypeOperationEnum;
 import br.com.supera.lib.audit.domain.enums.database.OperatorsDatabaseEnum;
@@ -32,18 +34,34 @@ public class FiltersTableAuditData extends BaseFiltersDatabaseModel {
 	private String username;
 	private String email;
 	private TypeOperationEnum operation;
-	private int version;
+	private Integer version;
 	
 	@Override
 	public Map<String, Object> buildFilters() {
 		final var filters = new HashMap<String, Object>();
-		filters.put("id", new ValueOperatorModel(OperatorsDatabaseEnum.EQ, id));
-		filters.put("table", new ValueOperatorModel(OperatorsDatabaseEnum.EQ, table));
-		filters.put("date", List.of(
-				new ValueOperatorModel(OperatorsDatabaseEnum.GTE, dateStart),
-				new ValueOperatorModel(OperatorsDatabaseEnum.LTE, dateEnd)));
-		filters.put("user.username", username);
-		filters.put("user.email", email);
+		if(id != null && !id.isBlank()) {
+			filters.put("id", new ValueOperatorModel(OperatorsDatabaseEnum.EQ, new ObjectId(id)));
+		}
+		if(table != null) {
+			filters.put("table", new ValueOperatorModel(OperatorsDatabaseEnum.EQ, table));
+		}
+		if(dateStart != null && dateEnd != null) {
+			filters.put("date", List.of(
+					new ValueOperatorModel(OperatorsDatabaseEnum.GTE, dateStart),
+					new ValueOperatorModel(OperatorsDatabaseEnum.LTE, dateEnd)));
+		}
+		if(username != null) {
+			filters.put("user.username", username);
+		}
+		if(email != null) {
+			filters.put("user.email", email);
+		}
+		if(operation != null) {
+			filters.put("operation", new ValueOperatorModel(OperatorsDatabaseEnum.EQ, operation));
+		}
+		if(version != null) {
+			filters.put("version", new ValueOperatorModel(OperatorsDatabaseEnum.EQ, version));
+		}
 		
 		return filters;
 	}

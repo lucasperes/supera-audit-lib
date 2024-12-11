@@ -21,4 +21,9 @@ public class UserEntityTest extends AbstractAuditEntity<Integer> {
 	private String name;
 	private String email;
 	
+	@Override
+	public Class<?> getClassType() {
+		return UserEntityTest.class;
+	}
+	
 }

@@ -9,19 +9,20 @@ import br.com.supera.lib.audit.domain.model.database.request.PaginationRequestMo
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * Classe Base para filtros em consultas no banco de dados
  */
 @Getter @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public abstract class BaseFiltersDatabaseModel extends BaseModel {
 
 	private static final long serialVersionUID = 9222382163557632179L;
-
+	
+	private static final int FIRST_PAGE = 0;
+	private static final int ROWS_PER_PAGE = 20;
+		
 	@NotNull
 	private PaginationRequestModel pagination;
 	@NotNull
@@ -29,5 +30,13 @@ public abstract class BaseFiltersDatabaseModel extends BaseModel {
 	private List<ValueSorterModel> sorters;
 	
 	public abstract Map<String, Object> buildFilters();
+	
+	public BaseFiltersDatabaseModel() {
+		this.pagination = PaginationRequestModel.builder()
+				.page(FIRST_PAGE)
+				.size(ROWS_PER_PAGE)
+				.build();
+		this.operator = OperatorsDatabaseEnum.AND;
+	}
 	
 }

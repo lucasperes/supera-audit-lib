@@ -3,9 +3,12 @@ package br.com.supera.lib.audit.domain.entity.mongo;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +25,9 @@ public abstract class AbstractAuditEntityMongo implements Serializable {
 
 	private static final long serialVersionUID = -3473352269270736833L;
 	
-	@Id
+	@BsonId
+	@BsonProperty("_id")
+	@JsonProperty("_id")
 	private ObjectId id;
 	
 	// Equals and Hashcode
