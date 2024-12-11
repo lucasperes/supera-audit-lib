@@ -62,6 +62,8 @@ public class TableAuditDataServiceTest {
 	@Test
 	public void listWithoutFiltersTest() {
 		final var filters = new FiltersTableAuditData();
+		filters.getPagination().setPage(2);
+		filters.getPagination().setSize(3);
 		ResultPaginatedModel<TableAuditDataEntityMongo<UserEntityTest>> result = service.<UserEntityTest>list(filters);
 		
 		assertNotNull(result);

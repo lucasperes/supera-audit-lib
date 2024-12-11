@@ -126,8 +126,9 @@ public class MongoConnectionFactory {
 					.into(new ArrayList<>());
 			
 			final var count = collection.countDocuments(filtersBson);
+			final var mod = (count % pagination.getSize());
 			var totalPages = (count / pagination.getSize());
-			if(count > 0) {
+			if(count > 0 && totalPages == 0 || mod > 0) {
 				totalPages += 1; // Add 1 because page start on 0
 			}
 			
