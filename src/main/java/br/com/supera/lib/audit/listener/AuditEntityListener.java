@@ -15,6 +15,9 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
@@ -42,6 +45,11 @@ public class AuditEntityListener {
 		}
 	}
 	
+	@PrePersist
+	public void beforePersist(AbstractAuditEntity<?> entity) {
+		entity.setVersao(0);
+	}
+	
 	@PostPersist
 	public void afterPersist(AbstractAuditEntity<?> entity) {
 		build();
@@ -62,15 +70,57 @@ public class AuditEntityListener {
 			LOGGER.warn("WARN | Application Context not initialized");
 		}
 	}
+	
+	@PreUpdate
+	public void beforeUpdate(AbstractAuditEntity<?> entity) {
+		entity.setVersao(entity.getVersao() + 1);
+	}
 
 	@PostUpdate
-	public void afterUpdate(Object entity) {
-		System.out.println("Post update");
+	public void afterUpdate(AbstractAuditEntity<?> entity) {
+		build();
+		if(isBuild) {
+			Table table = entity.getClass().getAnnotation(Table.class);
+			// Construct Audit Update
+			TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
+					.date(LocalDateTime.now())
+					.entity(entity)
+					.operation(TypeOperationEnum.UPDATE)
+					.table(table.name())
+					.user(session.getUserLogged())
+					.version(entity.getVersao())
+					.build();
+			
+			service.insert(entityAudit);
+		} else {
+			LOGGER.warn("WARN | Application Context not initialized");
+		}
+	}
+	
+	@PreRemove
+	public void beforeRemove(AbstractAuditEntity<?> entity) {
+		entity.setVersao(entity.getVersao() + 1);
 	}
 
 	@PostRemove
-	public void afterRemove(Object entity) {
-		System.out.println("Post remove");
+	public void afterRemove(AbstractAuditEntity<?> entity) {
+		build();
+		if(isBuild) {
+			Table table = entity.getClass().getAnnotation(Table.class);
+			// Construct Audit Update
+			TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
+					.date(LocalDateTime.now())
+					.entity(entity)
+					.operation(TypeOperationEnum.DELETE)
+					.table(table.name())
+					.user(session.getUserLogged())
+					.version(entity.getVersao())
+					.build();
+			
+			service.insert(entityAudit);
+		} else {
+			LOGGER.warn("WARN | Application Context not initialized");
+		}
 	}
 	
 	@PostLoad

@@ -81,6 +81,10 @@ public class JpaConnectionFactoryImpl implements IDatabaseConnectionFactory {
 		return null;
 	}
 	
+	public EntityManager createManager() {
+		return factory.createEntityManager();
+	}
+	
 	public void closeFactory() {
 		if(factory != null && factory.isOpen()) {
 			factory.close();
