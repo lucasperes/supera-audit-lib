@@ -1,4 +1,4 @@
-package br.com.supera.lib.audit.domain.entity;
+package br.com.supera.lib.audit.domain.entity.test;
 
 import br.com.supera.lib.audit.domain.entity.jpa.AbstractAuditEntity;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "user_test", schema = "public")
 public class UserEntityTest extends AbstractAuditEntity<Integer> {
 
 	private static final long serialVersionUID = 4062278016219050608L;
@@ -27,6 +27,7 @@ public class UserEntityTest extends AbstractAuditEntity<Integer> {
 	private Integer id;
 	private String name;
 	private String email;
+	private String profile;
 	
 	@Override
 	public Class<?> getClassType() {

@@ -9,6 +9,7 @@ import br.com.supera.lib.audit.domain.entity.jpa.AbstractAuditEntity;
 import br.com.supera.lib.audit.domain.enums.TypeOperationEnum;
 import br.com.supera.lib.audit.utils.ConstantsAuditUtils;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,8 +19,8 @@ import lombok.Setter;
  * 
  * @param <T> Tipo de Entidade a ser auditada
  */
-@Getter
-@Setter
+@Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @TableProperties(collectionName = TableAuditDataEntityMongo.NAME_COLLECTION)
