@@ -18,7 +18,7 @@ import jakarta.persistence.PostUpdate;
 import jakarta.persistence.Table;
 
 /**
- * Classe Listener para ouvir os eventos de CRUD no banco
+ * Classe Listener para ouvir os eventos de CRUD no banco de dados
  */
 public class AuditEntityListener {
 
