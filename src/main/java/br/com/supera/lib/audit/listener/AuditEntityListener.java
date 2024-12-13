@@ -47,7 +47,6 @@ public class AuditEntityListener {
 		build();
 		if(isBuild) {
 			Table table = entity.getClass().getAnnotation(Table.class);
-			
 			// Construct Audit Insert
 			TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
 					.date(LocalDateTime.now())
