@@ -1,5 +1,7 @@
 package br.com.supera.lib.audit.domain.model.database.config;
 
+import br.com.supera.lib.audit.domain.enums.database.ProviderDatabaseEnum;
+import br.com.supera.lib.audit.domain.enums.database.jpa.JpaProviderDatabaseEnum;
 import br.com.supera.lib.audit.domain.model.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +25,7 @@ public class DatabaseConnectionConfigModel extends BaseModel {
 	private String username;
 	private String password;
 	private String database;
+	private ProviderDatabaseEnum provider;
+	private JpaProviderDatabaseEnum providerJpa;
 	
 }

@@ -1,4 +1,4 @@
-package br.com.supera.lib.audit.config;
+package br.com.supera.lib.audit.config.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 
 import br.com.supera.lib.audit.annotation.TableProperties;
+import br.com.supera.lib.audit.config.IDatabaseConnectionFactory;
+import br.com.supera.lib.audit.domain.entity.EntityBase;
 import br.com.supera.lib.audit.domain.entity.mongo.AbstractAuditEntityMongo;
 import br.com.supera.lib.audit.domain.entity.mongo.codecs.TableAuditDataEntityMongoCodec;
 import br.com.supera.lib.audit.domain.enums.database.OperatorsDatabaseEnum;
@@ -34,9 +36,12 @@ import br.com.supera.lib.audit.exception.DatabaseException;
 import br.com.supera.lib.audit.exception.IllegalArgumentException;
 import lombok.Getter;
 
-public class MongoConnectionFactory {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MongoConnectionFactory.class);
+/**
+ * Classe Factory para fabrica de conexoes com banco MongoDB
+ */
+public class MongoConnectionFactoryImpl implements IDatabaseConnectionFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MongoConnectionFactoryImpl.class);
 	
 	private static final String STRING_CONNECTION = "mongodb://%s:%s";
 	private static final String STRING_CONNECTION_USER_PROVIDER = "mongodb://%s:%s@%s:%s";
@@ -46,12 +51,13 @@ public class MongoConnectionFactory {
 	@Getter
 	private static MongoClient client;
 	
-	public MongoConnectionFactory(DatabaseConnectionConfigModel config) {
+	public MongoConnectionFactoryImpl(DatabaseConnectionConfigModel config) {
 		this.config = config;
 		buildClient();
 	}
 	
-	private void buildClient() {
+	@Override
+	public void buildClient() {
 		CodecRegistry customCodecRegistry = CodecRegistries.fromCodecs(new TableAuditDataEntityMongoCodec<>());
 		
 		CodecRegistry combinedCodecRegistry = CodecRegistries.fromRegistries(
@@ -77,21 +83,23 @@ public class MongoConnectionFactory {
 		return url;
 	}
 	
-	public <T extends AbstractAuditEntityMongo> T insert(T entity, Class<T> type) {
+	@Override
+	public <T extends EntityBase> T insert(T entity, Class<T> type) {
 		try {
-			if(entity == null) {
+			AbstractAuditEntityMongo entityMongo = (AbstractAuditEntityMongo) entity;
+			if(entityMongo == null) {
 				throw new IllegalArgumentException("Entity is null");
 			}
-			if(!entity.getClass().isAnnotationPresent(TableProperties.class)) {
+			if(!entityMongo.getClass().isAnnotationPresent(TableProperties.class)) {
 				throw new IllegalArgumentException("Entity not have @TableProperties annotation declared");
 			}
 			MongoDatabase database = client.getDatabase(config.getDatabase());
 			
-			TableProperties props = entity.getClass().getAnnotation(TableProperties.class);
+			TableProperties props = entityMongo.getClass().getAnnotation(TableProperties.class);
 			MongoCollection<T> collection = database.getCollection(props.collectionName(), type);
 			final var result = collection.insertOne(entity);
 			final var idInserted = result.getInsertedId().asObjectId().getValue();
-			entity.setId(idInserted);
+			entityMongo.setId(idInserted);
 			LOGGER.info("INFO | Sucess on insert entity with returned ID = {}", idInserted);
 			
 			return entity;
@@ -100,7 +108,8 @@ public class MongoConnectionFactory {
 		}
 	}
 	
-	public <T extends AbstractAuditEntityMongo> ResultPaginatedModel<T> list(BaseFiltersDatabaseModel filters, Class<T> type) {
+	@Override
+	public <T extends EntityBase> ResultPaginatedModel<T> list(BaseFiltersDatabaseModel filters, Class<T> type) {
 		try {
 			if(type == null) {
 				throw new IllegalArgumentException("Type result is null");

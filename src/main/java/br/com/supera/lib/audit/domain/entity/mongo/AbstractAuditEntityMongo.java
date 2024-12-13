@@ -1,6 +1,5 @@
 package br.com.supera.lib.audit.domain.entity.mongo;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.bson.codecs.pojo.annotations.BsonId;
@@ -9,6 +8,7 @@ import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.supera.lib.audit.domain.entity.EntityBase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class AbstractAuditEntityMongo implements Serializable {
+public abstract class AbstractAuditEntityMongo extends EntityBase {
 
 	private static final long serialVersionUID = -3473352269270736833L;
 	

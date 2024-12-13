@@ -14,6 +14,7 @@ import br.com.supera.lib.audit.domain.entity.UserEntityTest;
 import br.com.supera.lib.audit.domain.entity.mongo.TableAuditDataEntityMongo;
 import br.com.supera.lib.audit.domain.entity.mongo.UserModel;
 import br.com.supera.lib.audit.domain.enums.TypeOperationEnum;
+import br.com.supera.lib.audit.domain.enums.database.ProviderDatabaseEnum;
 import br.com.supera.lib.audit.domain.enums.database.SortEnum;
 import br.com.supera.lib.audit.domain.model.database.config.DatabaseConnectionConfigModel;
 import br.com.supera.lib.audit.domain.model.database.filters.FiltersTableAuditData;
@@ -28,13 +29,14 @@ public class TableAuditDataServiceTest {
 	private TableAuditDataService service;
 	
 	@Before
-	public void initAll() {
+	public void initEach() {
 		final var config = DatabaseConnectionConfigModel.builder()
 				.host("localhost")
 				.port(27017)
 				.database("crie_logs")
 				.username("")
 				.password("")
+				.provider(ProviderDatabaseEnum.MONGO_DB)
 				.build();
 		service = new TableAuditDataService(config);
 	}

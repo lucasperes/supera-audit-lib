@@ -2,7 +2,6 @@ package br.com.supera.lib.audit.domain.model.database.response;
 
 import java.util.List;
 
-import br.com.supera.lib.audit.domain.entity.mongo.AbstractAuditEntityMongo;
 import br.com.supera.lib.audit.domain.model.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +18,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultPaginatedModel<T extends AbstractAuditEntityMongo> extends BaseModel {
+public class ResultPaginatedModel<T> extends BaseModel {
 
 	private static final long serialVersionUID = -7644051652750646902L;
 
