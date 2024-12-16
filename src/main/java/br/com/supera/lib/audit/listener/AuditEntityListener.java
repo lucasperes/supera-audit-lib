@@ -1,6 +1,7 @@
 package br.com.supera.lib.audit.listener;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +49,12 @@ public class AuditEntityListener {
 	@PrePersist
 	public void beforePersist(AbstractAuditEntity<?> entity) {
 		entity.setVersao(0);
+		entity.setIsAtivo(true);
 	}
 	
 	@PostPersist
 	public void afterPersist(AbstractAuditEntity<?> entity) {
-		build();
-		if(isBuild) {
+		IExecuteActionListener action = () -> {
 			Table table = entity.getClass().getAnnotation(Table.class);
 			// Construct Audit Insert
 			TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
@@ -66,9 +67,9 @@ public class AuditEntityListener {
 					.build();
 			
 			service.insert(entityAudit);
-		} else {
-			LOGGER.warn("WARN | Application Context not initialized");
-		}
+		};
+		
+		executeActionListener(action);
 	}
 	
 	@PreUpdate
@@ -78,23 +79,27 @@ public class AuditEntityListener {
 
 	@PostUpdate
 	public void afterUpdate(AbstractAuditEntity<?> entity) {
-		build();
-		if(isBuild) {
-			Table table = entity.getClass().getAnnotation(Table.class);
-			// Construct Audit Update
-			TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
-					.date(LocalDateTime.now())
-					.entity(entity)
-					.operation(TypeOperationEnum.UPDATE)
-					.table(table.name())
-					.user(session.getUserLogged())
-					.version(entity.getVersao())
-					.build();
-			
-			service.insert(entityAudit);
-		} else {
-			LOGGER.warn("WARN | Application Context not initialized");
-		}
+		IExecuteActionListener action = () -> {
+			// Logical Exclusion
+			if(Boolean.FALSE.equals(entity.getIsAtivo())) {
+				insertLogDelete(entity);
+			} else {
+				Table table = entity.getClass().getAnnotation(Table.class);
+				// Construct Audit Update
+				TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
+						.date(LocalDateTime.now())
+						.entity(entity)
+						.operation(TypeOperationEnum.UPDATE)
+						.table(table.name())
+						.user(session.getUserLogged())
+						.version(entity.getVersao())
+						.build();
+				
+				service.insert(entityAudit);
+			}
+		};
+		
+		executeActionListener(action);
 	}
 	
 	@PreRemove
@@ -104,28 +109,53 @@ public class AuditEntityListener {
 
 	@PostRemove
 	public void afterRemove(AbstractAuditEntity<?> entity) {
-		build();
-		if(isBuild) {
-			Table table = entity.getClass().getAnnotation(Table.class);
-			// Construct Audit Update
-			TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
-					.date(LocalDateTime.now())
-					.entity(entity)
-					.operation(TypeOperationEnum.DELETE)
-					.table(table.name())
-					.user(session.getUserLogged())
-					.version(entity.getVersao())
-					.build();
-			
-			service.insert(entityAudit);
-		} else {
-			LOGGER.warn("WARN | Application Context not initialized");
-		}
+		executeActionListener(() -> {
+			insertLogDelete(entity);
+		});
+	}
+	
+	private void insertLogDelete(AbstractAuditEntity<?> entity) {
+		Table table = entity.getClass().getAnnotation(Table.class);
+		// Construct Audit Update
+		TableAuditDataEntityMongo<?> entityAudit = TableAuditDataEntityMongo.builder()
+				.date(LocalDateTime.now())
+				.entity(entity)
+				.operation(TypeOperationEnum.DELETE)
+				.table(table.name())
+				.user(session.getUserLogged())
+				.version(entity.getVersao())
+				.build();
+		
+		service.insert(entityAudit);
 	}
 	
 	@PostLoad
 	public void afterLoad(Object entity) {
 		System.out.println("Post load");
+	}
+	
+	private void executeActionListener(IExecuteActionListener action) {
+		try {
+			build();
+			if(isBuild) {
+				// Asyncrono
+				if(session.isExecuteInBackground()) {
+					var executor = Executors.newVirtualThreadPerTaskExecutor();
+					executor.submit(() -> {
+						action.execute();
+						executor.shutdown();
+					});
+				}
+				// Syncrono
+				else {
+					action.execute();
+				}
+			} else {
+				LOGGER.warn("WARN | Application Context not initialized");
+			}
+		} catch(Exception err) {			
+			LOGGER.warn("ERROR | Is not possible save logs on mongo database {}", err);
+		}
 	}
 	
 }

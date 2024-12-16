@@ -34,6 +34,7 @@ public abstract class AbstractAuditEntity<ID> extends EntityBase {
 	// NAMES COLUMNS DATABASE
 	public static final String COLUMN_ID = "ID";
 	public static final String COLUMN_VERSAO = "NUM_VERSAO";
+	public static final String COLUMN_IS_ATIVO = "IS_ATIVO";
 
 	/**
 	 * Deve retornar o ID da Entidade
@@ -60,6 +61,10 @@ public abstract class AbstractAuditEntity<ID> extends EntityBase {
 	@NotNull
 	@Column(name = COLUMN_VERSAO, nullable = false)
 	private Integer versao;
+	
+	@NotNull
+	@Column(name = COLUMN_IS_ATIVO, nullable = false)
+	private Boolean isAtivo;
 
 	@Transient
 	private String _class;

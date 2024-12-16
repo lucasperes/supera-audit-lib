@@ -22,5 +22,6 @@ public class SessionModel extends BaseModel {
 
 	private DatabaseConnectionConfigModel databaseConnection;
 	private UserModel userLogged;
+	private boolean executeInBackground;
 	
 }
