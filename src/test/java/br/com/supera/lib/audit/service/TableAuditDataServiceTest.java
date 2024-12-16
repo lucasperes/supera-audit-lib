@@ -10,16 +10,17 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.supera.lib.audit.domain.entity.mongo.TableAuditDataEntityMongo;
-import br.com.supera.lib.audit.domain.entity.mongo.UserModel;
-import br.com.supera.lib.audit.domain.entity.test.UserEntityTest;
-import br.com.supera.lib.audit.domain.enums.TypeOperationEnum;
-import br.com.supera.lib.audit.domain.enums.database.ProviderDatabaseEnum;
-import br.com.supera.lib.audit.domain.enums.database.SortEnum;
-import br.com.supera.lib.audit.domain.model.database.config.DatabaseConnectionConfigModel;
-import br.com.supera.lib.audit.domain.model.database.filters.FiltersTableAuditData;
-import br.com.supera.lib.audit.domain.model.database.filters.ValueSorterModel;
-import br.com.supera.lib.audit.domain.model.database.response.ResultPaginatedModel;
+import br.gov.rs.lib.audit.domain.entity.mongo.TableAuditDataEntityMongo;
+import br.gov.rs.lib.audit.domain.entity.mongo.UserModel;
+import br.gov.rs.lib.audit.domain.entity.test.UserEntityTest;
+import br.gov.rs.lib.audit.domain.enums.TypeOperationEnum;
+import br.gov.rs.lib.audit.domain.enums.database.ProviderDatabaseEnum;
+import br.gov.rs.lib.audit.domain.enums.database.SortEnum;
+import br.gov.rs.lib.audit.domain.model.database.config.DatabaseConnectionConfigModel;
+import br.gov.rs.lib.audit.domain.model.database.filters.FiltersTableAuditData;
+import br.gov.rs.lib.audit.domain.model.database.filters.ValueSorterModel;
+import br.gov.rs.lib.audit.domain.model.database.response.ResultPaginatedModel;
+import br.gov.rs.lib.audit.service.TableAuditDataService;
 
 /**
  * Classe Teste para {@link TableAuditDataService}

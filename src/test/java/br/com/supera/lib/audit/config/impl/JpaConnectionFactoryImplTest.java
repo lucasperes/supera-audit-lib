@@ -8,14 +8,15 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.supera.lib.audit.context.AppContext;
-import br.com.supera.lib.audit.domain.entity.mongo.UserModel;
-import br.com.supera.lib.audit.domain.entity.test.DadosPessoalEntityTest;
-import br.com.supera.lib.audit.domain.entity.test.UserEntityTest;
-import br.com.supera.lib.audit.domain.enums.database.ProviderDatabaseEnum;
-import br.com.supera.lib.audit.domain.enums.database.jpa.JpaProviderDatabaseEnum;
-import br.com.supera.lib.audit.domain.model.app.SessionModel;
-import br.com.supera.lib.audit.domain.model.database.config.DatabaseConnectionConfigModel;
+import br.gov.rs.lib.audit.config.impl.JpaConnectionFactoryImpl;
+import br.gov.rs.lib.audit.context.AppContext;
+import br.gov.rs.lib.audit.domain.entity.mongo.UserModel;
+import br.gov.rs.lib.audit.domain.entity.test.DadosPessoalEntityTest;
+import br.gov.rs.lib.audit.domain.entity.test.UserEntityTest;
+import br.gov.rs.lib.audit.domain.enums.database.ProviderDatabaseEnum;
+import br.gov.rs.lib.audit.domain.enums.database.jpa.JpaProviderDatabaseEnum;
+import br.gov.rs.lib.audit.domain.model.app.SessionModel;
+import br.gov.rs.lib.audit.domain.model.database.config.DatabaseConnectionConfigModel;
 import jakarta.persistence.EntityManager;
 
 /**
